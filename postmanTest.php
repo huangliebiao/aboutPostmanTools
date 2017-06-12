@@ -20,8 +20,7 @@ class SetValue
 			echo "文件不存在!";
 			die;
 		}
-		$data = file_get_contents($this->path);
-        $data = json_decode($data, true);
+		$data = json_decode(file_get_contents($this->path),true);
         foreach ($data['item'] as $k => $v) {
         	foreach ($v['item'] as $k2 => $v2) {	
         		$data['item'][$k]['item'][$k2]['event'] = $this->getTests();	// 接口测试反馈event
