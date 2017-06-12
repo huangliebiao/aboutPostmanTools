@@ -21,37 +21,37 @@ class SetValue
 			die;
 		}
 		$data = json_decode(file_get_contents($this->path),true);
-        foreach ($data['item'] as $k => $v) {
-        	foreach ($v['item'] as $k2 => $v2) {	
-        		$data['item'][$k]['item'][$k2]['event'] = $this->getTests();	// 接口测试反馈event
-        		$data['item'][$k]['item'][$k2]['event'][1]['listen'] = 'prerequest';
-        		$data['item'][$k]['item'][$k2]['event'][1]['script']['type'] = 'text/javascript';
- 
-        		$url = !empty($v2['request']['url']['raw']) ? $v2['request']['url']['raw'] : $v2['request']['url'];	// 判断url是否为数组
-        		if (strpos($url,'/:')) {
-        			// url中类似 /:id 存在的处理
-        			$arr = explode(':',$url);
-        			unset($data['item'][$k]['item'][$k2]['request']['url']);	//	有可能为数组
-        			$data['item'][$k]['item'][$k2]['request']['url'] = $this->getUrl($arr[0],$arr[1]);
-        			$data['item'][$k]['item'][$k2]['event'][1]['script']['exec'][] = $this->getUrlScript($arr[1]);	
-        		} else {
-        			$data['item'][$k]['item'][$k2]['request']['url'] = $this->getUrl($v2['request']['url']);
-        			$urlencoded = $v2['request']['body']['urlencoded'];
-        			$formdata   = $v2['request']['body']['formdata'];
-        			$body_type  = $urlencoded ? $urlencoded : $formdata;	// 判断是form-data还是x-www-form-urlencoded
-        			$column     = $urlencoded ? 'urlencoded' : 'formdata';
-        			if (!empty($body_type)) {
-	        			foreach ($body_type as $k3 => $v3) {
-	        				$data['item'][$k]['item'][$k2]['request']['body'][$column][$k3]['value'] = "{{".$v3['key']."}}";	// 值
-	        				$data['item'][$k]['item'][$k2]['event'][1]['script']['exec'][] = $this->getExecScript($v3['key'],$v3['value']);	 // 设置pre-srcipt
-	        			}
-	        		}
-        		}
- 
-        	}
-        }
-        file_put_contents("test.json", json_encode($data));
-        echo json_encode($data);
+        	foreach ($data['item'] as $k => $v) {
+			foreach ($v['item'] as $k2 => $v2) {	
+				$data['item'][$k]['item'][$k2]['event'] = $this->getTests();	// 接口测试反馈event
+				$data['item'][$k]['item'][$k2]['event'][1]['listen'] = 'prerequest';
+				$data['item'][$k]['item'][$k2]['event'][1]['script']['type'] = 'text/javascript';
+
+				$url = !empty($v2['request']['url']['raw']) ? $v2['request']['url']['raw'] : $v2['request']['url'];	// 判断url是否为数组
+				if (strpos($url,'/:')) {
+					// url中类似 /:id 存在的处理
+					$arr = explode(':',$url);
+					unset($data['item'][$k]['item'][$k2]['request']['url']);	//	有可能为数组
+					$data['item'][$k]['item'][$k2]['request']['url'] = $this->getUrl($arr[0],$arr[1]);
+					$data['item'][$k]['item'][$k2]['event'][1]['script']['exec'][] = $this->getUrlScript($arr[1]);	
+				} else {
+					$data['item'][$k]['item'][$k2]['request']['url'] = $this->getUrl($v2['request']['url']);
+					$urlencoded = $v2['request']['body']['urlencoded'];
+					$formdata   = $v2['request']['body']['formdata'];
+					$body_type  = $urlencoded ? $urlencoded : $formdata;	// 判断是form-data还是x-www-form-urlencoded
+					$column     = $urlencoded ? 'urlencoded' : 'formdata';
+					if (!empty($body_type)) {
+						foreach ($body_type as $k3 => $v3) {
+							$data['item'][$k]['item'][$k2]['request']['body'][$column][$k3]['value'] = "{{".$v3['key']."}}";	// 值
+							$data['item'][$k]['item'][$k2]['event'][1]['script']['exec'][] = $this->getExecScript($v3['key'],$v3['value']);	 // 设置pre-srcipt
+						}
+					}
+				}
+
+			}
+		}
+        	file_put_contents("test.json", json_encode($data));
+        	echo json_encode($data);
 	}
  
 	/**
