@@ -21,7 +21,7 @@ class SetValue
 			die;
 		}
 		$data = json_decode(file_get_contents($this->path),true);
-        	foreach ($data['item'] as $k => $v) {
+        foreach ($data['item'] as $k => $v) {
 			foreach ($v['item'] as $k2 => $v2) {	
 				$data['item'][$k]['item'][$k2]['event'] = $this->getTests();	// 接口测试反馈event
 				$data['item'][$k]['item'][$k2]['event'][1]['listen'] = 'prerequest';
@@ -50,8 +50,8 @@ class SetValue
 
 			}
 		}
-        	file_put_contents("test.json", json_encode($data));
-        	echo json_encode($data);
+        file_put_contents("test.json", json_encode($data));
+        echo json_encode($data);
 	}
  
 	/**
@@ -65,23 +65,23 @@ class SetValue
 			"script" => [
 				"type" => "text/javascript",
 				"exec" => [
-                        "		if (responseCode.code == 200) {",
-                        "			var jsonData = JSON.parse(responseBody);",
-                        "			if (jsonData.code == 200 || jsonData.status == 1) {",
-                        "				if (jsonData.code == 200) {",
-                        "					tests['success：' + jsonData.code] = jsonData.code == 200;",
-                        "				} else {",
-                        "					tests['success：' + jsonData.status] = jsonData.status == 1;",
-                        "				}",
+                        "	if (responseCode.code == 200) {",
+                        "		var jsonData = JSON.parse(responseBody);",
+                        "		if (jsonData.code == 200 || jsonData.status == 1) {",
+                        "			if (jsonData.code == 200) {",
+                        "				tests['success：' + jsonData.code] = jsonData.code == 200;",
                         "			} else {",
-                        "				if (jsonData.code == 400) {",
-                        "					tests['error：' + jsonData.error] = jsonData.code == 400;",
-                        "				} else {",
-                        "					tests['error：' + jsonData.info] = jsonData.status === 0;",
-                        "				}",
+                        "				tests['success：' + jsonData.status] = jsonData.status == 1;",
+                        "			}",
+                        "		} else {",
+                        "			if (jsonData.code == 400) {",
+                        "				tests['error：' + jsonData.error] = jsonData.code == 400;",
+                        "			} else {",
+                        "				tests['error：' + jsonData.info] = jsonData.status === 0;",
                         "			}",
                         "		}",
-                    		]
+                        "	}",
+                ]
 			],
 		];
 		return $event;
